@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Recommandation</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <h1>Movie Recommandation</h1>
+
+    <!-- Authentication Section -->
+    <div id="authSection">
+        <span id="userDisplay"></span>
+        <button id="loginBtn" onclick="redirectToLogin()">Login</button>
+        <button id="signupBtn" onclick="redirectToSignup()">Sign Up</button>
+        <button id="logoutBtn" onclick="logout()" style="display: none;">Logout</button>
+    </div>
+
+    <form id="reviewForm">
+        <input type="text" id="movieName" placeholder="Movie Name" required><br>
+        <input type="text" id="reviewer" placeholder="Reviewer Name" required><br>
+        <input type="number" id="rating" placeholder="Rating (1-10)" required><br>
+        <textarea id="comment" placeholder="Your Review" required></textarea><br>
+        <button type="submit">Submit Review</button>
+    </form>
+
+    <h2>All Reviews</h2>
+    <div id="reviews"></div>
+
+    <script src="auth.js"></script> <!-- Added authentication script -->
+    <script src="script.js"></script>
+</body>
+</html>
