@@ -1,24 +1,30 @@
-const API_URL = "http://localhost:5000/reviews";
+const API_URL = "https://aismoviereview.onrender.com/reviews"; // Updated to deployed backend URL
 
 // Fetch and display reviews
 async function fetchReviews() {
-    const res = await fetch(API_URL);
-    const reviews = await res.json();
-    const reviewsDiv = document.getElementById('reviews');
-    reviewsDiv.innerHTML = "";
+    try {
+        const res = await fetch(API_URL);
+        if (!res.ok) throw new Error("Failed to fetch reviews");
+        const reviews = await res.json();
+        
+        const reviewsDiv = document.getElementById('reviews');
+        reviewsDiv.innerHTML = "";
 
-    reviews.forEach(review => {
-        const reviewEl = document.createElement('div');
-        reviewEl.classList.add('review');
-        reviewEl.innerHTML = `
-            <h3>${review.movieName} (Rating: ${review.rating})</h3>
-            <p><strong>By:</strong> ${review.reviewer}</p>
-            <p>${review.comment}</p>
-            <button class="delete-btn" onclick="deleteReview('${review._id}')">Delete</button>
-            <button class="update-btn" onclick="updateReview('${review._id}')">Update</button>
-        `;
-        reviewsDiv.appendChild(reviewEl);
-    });
+        reviews.forEach(review => {
+            const reviewEl = document.createElement('div');
+            reviewEl.classList.add('review');
+            reviewEl.innerHTML = `
+                <h3>${review.movieName} (Rating: ${review.rating})</h3>
+                <p><strong>By:</strong> ${review.reviewer}</p>
+                <p>${review.comment}</p>
+                <button class="delete-btn" onclick="deleteReview('${review._id}')">Delete</button>
+                <button class="update-btn" onclick="updateReview('${review._id}')">Update</button>
+            `;
+            reviewsDiv.appendChild(reviewEl);
+        });
+    } catch (error) {
+        console.error("Error fetching reviews:", error);
+    }
 }
 
 // Handle form submission to add review
@@ -29,24 +35,32 @@ document.getElementById("reviewForm").addEventListener("submit", async (e) => {
     const rating = document.getElementById("rating").value;
     const comment = document.getElementById("comment").value;
 
-    await fetch(API_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ movieName, reviewer, rating, comment })
-    });
+    try {
+        const res = await fetch(API_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ movieName, reviewer, rating, comment })
+        });
 
-    fetchReviews();
-    e.target.reset(); 
+        if (!res.ok) throw new Error("Failed to add review");
 
-    setTimeout(() => {
-        document.getElementById("reviewForm").scrollIntoView({ behavior: "smooth" });
-    }, 100);
+        fetchReviews();
+        e.target.reset(); 
+    } catch (error) {
+        console.error("Error adding review:", error);
+    }
 });
 
 // Delete review
 async function deleteReview(id) {
-    await fetch(`${API_URL}/${id}`, { method: "DELETE" });
-    fetchReviews();
+    try {
+        const res = await fetch(`${API_URL}/${id}`, { method: "DELETE" });
+        if (!res.ok) throw new Error("Failed to delete review");
+
+        fetchReviews();
+    } catch (error) {
+        console.error("Error deleting review:", error);
+    }
 }
 
 // Update review
@@ -86,3 +100,4 @@ window.onload = function() {
 };
 
 fetchReviews();
+
